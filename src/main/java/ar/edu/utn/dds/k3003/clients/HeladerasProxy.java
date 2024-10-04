@@ -5,6 +5,8 @@ import ar.edu.utn.dds.k3003.facades.FachadaViandas;
 import ar.edu.utn.dds.k3003.facades.dtos.HeladeraDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.RetiroDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.TemperaturaDTO;
+import io.javalin.http.HttpStatus;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -56,14 +58,17 @@ public class HeladerasProxy implements FachadaHeladeras {
     }
 
     @Override
-    public List<TemperaturaDTO> obtenerTemperaturas(Integer idHeladera) {
-        Response<List<TemperaturaDTO>> response = null;
+    public List<TemperaturaDTO> obtenerTemperaturas(Integer heladeraId) {
+    	Response<List<TemperaturaDTO>> response;
         try {
-            response = service.obtenerTemperaturas(idHeladera).execute();
+        	response = service.obtenerTemperaturas(heladeraId).execute();
             if (response.isSuccessful()) {
                 return response.body();
             }
-            throw new RuntimeException("Error al obtener las temperaturas de la heladera: " + response.code());
+            if (response.code() == HttpStatus.NOT_FOUND.getCode()) {
+                throw new NoSuchElementException("No se encontro la heladera " + heladeraId);
+            }
+            throw new NoSuchElementException("No se pudo conseguir las temperaturas de la heladera " + heladeraId);
         } catch (Exception e) {
             throw new RuntimeException("Error al obtener las temperaturas de la heladera", e);
         }

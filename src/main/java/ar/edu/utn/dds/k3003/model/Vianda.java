@@ -51,4 +51,8 @@ public class Vianda {
     this.fechaElaboracion = fechaElaboracion;
   }
 
+public void setEstado(EstadoViandaEnum estadoViandaEnum) {
+	this.estado = estadoViandaEnum;
+}
+
 }
