@@ -29,6 +29,7 @@ public class WebApp {
     }).start(port);
 
     app.post("/viandas", viandasController::agregar);
+    app.post("/viandasGenericas", viandasController::agregarGenericas);
     app.get("/viandas/search/findByColaboradorId", viandasController::obtenerXColIDAndAnioAndMes);
     app.get("/viandas/{qr}", viandasController::obtenerXQR);
     app.get("/viandas/{qr}/vencida", viandasController::evaluarVencimiento);
