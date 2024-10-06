@@ -1,9 +1,9 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/DLC4WqXm)
 # {Fernandez Fiel, Lucas Ezequiel}
 
-https://two024-tp-entrega-2-hiogen.onrender.com
+https://viandas-9js3.onrender.com
 
-Template para TP DDS 2024 - Entrega 3
+Template para TP DDS 2024 - Entrega 4
 
 # Endpoints
 
@@ -23,13 +23,12 @@ Agregar una nueva vianda.
 {
     "codigoQR": "asd",
     "fechaElaboracion": "2024-05-09T10:30:00Z",
-    "estado": "PREPARADA",
     "colaboradorId": 10,
     "heladeraId": 5
 }
 ```
 
-## DELETE /viandas
+## DELETE /clear
 Elimina las viandas de la base de datos
 
 ## GET viandas/search/findByColaboradorIdAndAnioAndMes
