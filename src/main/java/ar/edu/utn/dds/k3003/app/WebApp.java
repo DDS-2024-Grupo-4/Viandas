@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
+import io.javalin.json.JavalinJackson;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -17,25 +19,21 @@ public class WebApp {
   public static void main(String[] args) {
 
     var env = System.getenv();
-    var URL_HELADERAS = env.get("URL_HELADERAS");
     var objectMapper = createObjectMapper();
     var fachada = new Fachada();
     fachada.setHeladerasProxy(new HeladerasProxy(objectMapper));
     var port = Integer.parseInt(env.getOrDefault("PORT", "8080"));
     var viandasController = new ViandaController(fachada);
-    var app = Javalin.create()
-        .exception(RuntimeException.class, (e, ctx) -> {
-          ctx.status(400)
-              .result(e.getMessage());
-        })
-        .start(port);
+    var app = Javalin.create(config -> {
+        config.jsonMapper(new JavalinJackson().updateMapper(WebApp::configureObjectMapper));
+    }).start(port);
 
     app.post("/viandas", viandasController::agregar);
-    app.delete("/viandas", viandasController::limpiarDB);
     app.get("/viandas/search/findByColaboradorId", viandasController::obtenerXColIDAndAnioAndMes);
     app.get("/viandas/{qr}", viandasController::obtenerXQR);
     app.get("/viandas/{qr}/vencida", viandasController::evaluarVencimiento);
     app.patch("/viandas/{qrVianda}", viandasController::modificarHeladeraXQR);
+    app.delete("/clear", viandasController::limpiarDB);
 
   }
 

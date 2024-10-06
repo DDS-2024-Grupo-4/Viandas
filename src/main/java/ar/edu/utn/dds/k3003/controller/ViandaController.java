@@ -1,7 +1,9 @@
 package ar.edu.utn.dds.k3003.controller;
 
 import ar.edu.utn.dds.k3003.app.Fachada;
+import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
+import ar.edu.utn.dds.k3003.model.Vianda;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import java.util.NoSuchElementException;
@@ -22,12 +24,9 @@ public class ViandaController {
   }
 
   public void obtenerXColIDAndAnioAndMes(Context context) {
-    var colaboradorId = context.queryParamAsClass("id", Long.class)
-        .get();
-    var anio = context.queryParamAsClass("anio", Integer.class)
-        .get();
-    var mes = context.queryParamAsClass("mes", Integer.class)
-        .get();
+    var colaboradorId = context.queryParamAsClass("colaboradorId", Long.class).get();
+    var anio = context.queryParamAsClass("anio", Integer.class).get();
+    var mes = context.queryParamAsClass("mes", Integer.class).get();
     try {
       var viandaDTOS = this.fachada.viandasDeColaborador(colaboradorId, mes, anio);
       context.json(viandaDTOS);
@@ -38,8 +37,7 @@ public class ViandaController {
   }
 
   public void obtenerXQR(Context context) {
-    var qr = context.pathParamAsClass("qr", String.class)
-        .get();
+    var qr = context.pathParamAsClass("qr", String.class).get();
 
     try {
       var viandaDTO = this.fachada.buscarXQR(qr);
@@ -51,8 +49,7 @@ public class ViandaController {
   }
 
   public void evaluarVencimiento(Context context) {
-    var qr = context.pathParamAsClass("qr", String.class)
-        .get();
+    var qr = context.pathParamAsClass("qr", String.class).get();
 
     try {
       var viandaDTO = this.fachada.evaluarVencimiento(qr);

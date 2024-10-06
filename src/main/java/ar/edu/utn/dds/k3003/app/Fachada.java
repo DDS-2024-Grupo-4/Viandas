@@ -9,8 +9,7 @@ import ar.edu.utn.dds.k3003.model.Vianda;
 import ar.edu.utn.dds.k3003.repositories.MetricaRepository;
 import ar.edu.utn.dds.k3003.repositories.ViandaMapper;
 import ar.edu.utn.dds.k3003.repositories.ViandaRepository;
-/*import ar.edu.utn.dds.k3003.service.DDMetricsUtils;
-import io.micrometer.datadog.DatadogMeterRegistry;*/
+import ar.edu.utn.dds.k3003.service.UtilsMetrics;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,20 +20,15 @@ import javax.persistence.Persistence;
 public class Fachada implements FachadaViandas {
   private final ViandaMapper viandaMapper;
   private final ViandaRepository viandaRepository;
-  private final MetricaRepository metricaRepository;
   private FachadaHeladeras fachadaHeladeras;
   private EntityManagerFactory entityManagerFactory;
   private EntityManager entityManager;
-  
-  /*final DDMetricsUtils metricsUtils = new DDMetricsUtils("vianda");
-  final DatadogMeterRegistry registry = metricsUtils.getRegistry();*/
 
   public Fachada() {
     this.entityManagerFactory = Persistence.createEntityManagerFactory("viandas");
     this.entityManager = entityManagerFactory.createEntityManager();
     this.viandaMapper = new ViandaMapper();
     this.viandaRepository = new ViandaRepository(entityManager);
-    this.metricaRepository = new MetricaRepository(entityManager);
   }
 
   @Override
@@ -46,18 +40,24 @@ public class Fachada implements FachadaViandas {
             EstadoViandaEnum.PREPARADA,
             viandaDTO.getFechaElaboracion());
     vianda = this.viandaRepository.save(vianda);
+    UtilsMetrics.actualizarViandasCreadas();
     return viandaMapper.map(vianda);
-  }
-  
-  public Metrica agregarMetrica(Metrica metrica) {
-      metrica = this.metricaRepository.save(metrica);
-      return metrica;
   }
 
   @Override
   public ViandaDTO modificarEstado(String qr, EstadoViandaEnum estadoViandaEnum)
       throws NoSuchElementException {
     Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
+    EstadoViandaEnum estadoActual = viandaEncontrada.getEstado();
+    if(estadoActual == EstadoViandaEnum.PREPARADA && estadoViandaEnum == EstadoViandaEnum.EN_TRASLADO) {
+    	UtilsMetrics.actualizarViandasEnTransporte(true);
+    }
+    if(estadoActual == EstadoViandaEnum.EN_TRASLADO && estadoViandaEnum == EstadoViandaEnum.DEPOSITADA) {
+    	UtilsMetrics.actualizarViandasEnTransporte(false);
+    }
+    if(estadoViandaEnum == EstadoViandaEnum.VENCIDA) {
+    	UtilsMetrics.actualizarViandasVencidas();
+    }
     viandaEncontrada.setEstado(estadoViandaEnum);
     viandaEncontrada = viandaRepository.save(viandaEncontrada);
     return viandaMapper.map(viandaEncontrada);
@@ -75,12 +75,6 @@ public class Fachada implements FachadaViandas {
   public ViandaDTO buscarXQR(String qr) throws NoSuchElementException {
     Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
     return viandaMapper.map(viandaEncontrada);
-  }
-  
-  public Metrica buscarMetricaXQR(String qrMetrica) throws NoSuchElementException {
-      Metrica metrica = metricaRepository.findByQR(qrMetrica);
-
-      return metrica;
   }
 
   @Override
@@ -106,10 +100,6 @@ public class Fachada implements FachadaViandas {
 
   public void clearDB(){
     viandaRepository.clearDB();
-  }
-  
-  public void borrarMetricas(){
-      this.metricaRepository.borrarMetricas();
   }
 
 }

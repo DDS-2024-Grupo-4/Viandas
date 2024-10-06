@@ -8,16 +8,58 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class UtilsMetrics {
-    public static void enviarCreacionVianda(Long viandaId) {
+    public static void actualizarViandasCreadas() {
         Dotenv dotenv = Dotenv.load();
-        var url = dotenv.get("URL_METRICS");
-        url = url + viandaId;
-        HttpClient client = HttpClient.newHttpClient();
+        var url = dotenv.get("URL_METRICS_1");
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
+        url = url + "/incrementar";
+        
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if (!(response.statusCode() == 200)) {
+                        throw new RuntimeException("Error en la respuesta: " + response.statusCode());
+                    }
+                })
+                .exceptionally(e -> {
+                    throw new RuntimeException("Error durante la llamada a la API", e);
+                });
+    }
+    
+    public static void actualizarViandasEnTransporte(boolean aumentar) {
+        Dotenv dotenv = Dotenv.load();
+        var url = dotenv.get("URL_METRICS_2");
+
+        if (aumentar) {
+            url = url + "/incrementar";
+        } else {
+            url = url + "/disminuir";
+        }
+        
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if (!(response.statusCode() == 200)) {
+                        throw new RuntimeException("Error en la respuesta: " + response.statusCode());
+                    }
+                })
+                .exceptionally(e -> {
+                    throw new RuntimeException("Error durante la llamada a la API", e);
+                });
+    }
+    
+    public static void actualizarViandasVencidas() {
+        Dotenv dotenv = Dotenv.load();
+        var url = dotenv.get("URL_METRICS_3");
+
+        url = url + "/incrementar";
+        
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
 
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenAccept(response -> {
