@@ -8,8 +8,6 @@ import ar.edu.utn.dds.k3003.utils.utilsVianda;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import java.util.NoSuchElementException;
-import org.json.JSONObject;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ViandaController {
 
@@ -89,16 +87,16 @@ public class ViandaController {
   public void modificarEstadoVianda(Context context) {
       try {
           String qr = context.pathParam("qr");
-          EstadoViandaEnum estado = context.bodyAsClass(EstadoViandaEnum.class);
+          String estado = context.bodyAsClass(String.class);
+          EstadoViandaEnum estadoVianda = null;
           
-          /*EstadoViandaEnum estadoVianda = null;
           if(estado.equals("PREPARADA")) {estadoVianda = EstadoViandaEnum.PREPARADA;}
     	  if(estado.equals("DEPOSITADA")) {estadoVianda = EstadoViandaEnum.DEPOSITADA;}
     	  if(estado.equals("EN_TRASLADO")) {estadoVianda = EstadoViandaEnum.EN_TRASLADO;}
     	  if(estado.equals("RETIRADA")) {estadoVianda = EstadoViandaEnum.RETIRADA;}
-    	  if(estado.equals("VENCIDA")) {estadoVianda = EstadoViandaEnum.VENCIDA;}*/
+    	  if(estado.equals("VENCIDA")) {estadoVianda = EstadoViandaEnum.VENCIDA;}
 
-          ViandaDTO viandaActualizada = fachada.modificarEstado(qr, estado);
+          ViandaDTO viandaActualizada = fachada.modificarEstado(qr, estadoVianda);
           context.json(viandaActualizada).status(200);
       } catch (Exception e) {
     	  context.status(400).result(e.getMessage());
