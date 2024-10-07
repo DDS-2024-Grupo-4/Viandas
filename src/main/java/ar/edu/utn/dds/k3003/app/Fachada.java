@@ -45,18 +45,16 @@ public class Fachada implements FachadaViandas {
 
   @Override
   public ViandaDTO modificarEstado(String qr, EstadoViandaEnum estadoViandaEnum) throws NoSuchElementException {
-    Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
-    EstadoViandaEnum estadoActual = viandaEncontrada.getEstado();
-    if(estadoActual == EstadoViandaEnum.PREPARADA && estadoViandaEnum == EstadoViandaEnum.EN_TRASLADO) {
+    Vianda viandaEncontrada = viandaRepository.modificarEstado(qr, estadoViandaEnum);
+    if(estadoViandaEnum == EstadoViandaEnum.EN_TRASLADO) {
     	UtilsMetrics.actualizarViandasEnTransporte(true);
     }
-    if(estadoActual == EstadoViandaEnum.EN_TRASLADO && estadoViandaEnum == EstadoViandaEnum.DEPOSITADA) {
+    if(estadoViandaEnum == EstadoViandaEnum.DEPOSITADA) {
     	UtilsMetrics.actualizarViandasEnTransporte(false);
     }
     if(estadoViandaEnum == EstadoViandaEnum.VENCIDA) {
     	UtilsMetrics.actualizarViandasVencidas();
     }
-    viandaEncontrada = viandaRepository.modificarEstado(qr, estadoViandaEnum);
     return viandaMapper.map(viandaEncontrada);
   }
 
@@ -84,20 +82,19 @@ public class Fachada implements FachadaViandas {
 
   @Override
   public boolean evaluarVencimiento(String qr) throws NoSuchElementException {
-    Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
+    ViandaDTO viandaEncontrada = buscarXQR(qr);
     List<TemperaturaDTO> temperaturas = fachadaHeladeras.obtenerTemperaturas(viandaEncontrada.getHeladeraId());
     if (temperaturas.isEmpty()) {
       throw new TemperaturasNoEncontradasException("No se encontraron temperaturas para la heladera con ID: " + viandaEncontrada.getHeladeraId());
     }
-    return temperaturas.stream()
-        .anyMatch(temperaturaDTO -> temperaturaDTO.getTemperatura() >= 5);
+    return temperaturas.stream().anyMatch(temperaturaDTO -> temperaturaDTO.getTemperatura() >= 5);
   }
 
   @Override
   public ViandaDTO modificarHeladera(String qr, int nuevaHeladera) {
     Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
     viandaEncontrada.setHeladeraId(nuevaHeladera);
-    viandaEncontrada = viandaRepository.save(viandaEncontrada);
+    viandaEncontrada = viandaRepository.update(viandaEncontrada);
     return viandaMapper.map(viandaEncontrada);
   }
 

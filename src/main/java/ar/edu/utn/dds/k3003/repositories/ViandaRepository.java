@@ -38,11 +38,12 @@ public class ViandaRepository {
   }
 
   public Vianda buscarXQR(String qr) {
-      TypedQuery<Vianda> query = entityManager.createQuery("SELECT v FROM Vianda v WHERE v.codigoQR = :qr", Vianda.class);
-      query.setParameter("qr", qr);
-      List<Vianda> results = query.getResultList();
-      return results.isEmpty() ? null : results.get(0);
-  }
+	    TypedQuery<Vianda> query =
+	        entityManager.createQuery("SELECT v FROM Vianda v WHERE v.qr = :qr", Vianda.class);
+	    query.setParameter("qr", qr);
+	    List<Vianda> resultados = query.getResultList();
+	    return resultados.isEmpty() ? null : resultados.get(0);
+	  }
 
   public List<Vianda> getViandas() {
       TypedQuery<Vianda> query = entityManager.createQuery("SELECT v FROM Vianda v", Vianda.class);
@@ -56,7 +57,6 @@ public class ViandaRepository {
       }
       return vianda;
   }
-
 
   public Vianda update(Vianda vianda) {
       EntityTransaction transaction = entityManager.getTransaction();
