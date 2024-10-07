@@ -56,8 +56,7 @@ public class Fachada implements FachadaViandas {
     if(estadoViandaEnum == EstadoViandaEnum.VENCIDA) {
     	UtilsMetrics.actualizarViandasVencidas();
     }
-    viandaEncontrada.setEstado(estadoViandaEnum);
-    viandaEncontrada = viandaRepository.save(viandaEncontrada);
+    viandaEncontrada = viandaRepository.modificarEstado(qr, estadoViandaEnum);
     return viandaMapper.map(viandaEncontrada);
   }
 

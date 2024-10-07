@@ -1,5 +1,6 @@
 package ar.edu.utn.dds.k3003.repositories;
 
+import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.model.Vianda;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -73,6 +74,17 @@ public class ViandaRepository {
     query.setParameter("endOfMonth", endOfMonth);
 
     return query.getResultList();
+  }
+  
+  public Vianda modificarEstado(String qr, EstadoViandaEnum estado) {
+
+      entityManager.getTransaction().begin();
+      Vianda vianda = this.buscarXQR(qr);
+      vianda.setEstado(estado);
+      this.save(vianda);
+      entityManager.merge(vianda);
+      entityManager.getTransaction().commit();
+      return vianda;
   }
 
   public void clearDB() {
