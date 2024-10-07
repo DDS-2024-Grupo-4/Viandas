@@ -84,10 +84,22 @@ public class ViandaController {
       context.status(HttpStatus.NOT_ACCEPTABLE);
     }
   }
+  
+  public void modificarEstadoVianda(Context context) {
+	  String qr = context.pathParam("qr");
+	  EstadoViandaEnum estado = context.queryParamAsClass("estado", EstadoViandaEnum.class).get();
+      try {
+    	  ViandaDTO viandaActualizada = this.fachada.modificarEstado(qr, estado);
+          context.json(viandaActualizada);
+          context.status(HttpStatus.OK);
+      } catch (Exception e) {
+    	  context.status(HttpStatus.NOT_FOUND).result(e.getMessage());
+      }
+  }
+
 
   public void modificarHeladeraXQR(Context context) {
-    var qr = context.pathParamAsClass("qrVianda", String.class)
-        .get();
+    var qr = context.pathParamAsClass("qrVianda", String.class).get();
     var heladeraId = context.queryParamAsClass("heladeraId",Integer.class).get();
 
     var viandaDTO = this.fachada.modificarHeladera(qr, heladeraId);

@@ -36,9 +36,9 @@ Obtener una vianda por id de colaborador, su anio y mes
 
 **Request:**
 
--   Parameters: **colaboradorId (long) - ID del colaborador**
--   Parameters: **anio (integer) - anio de la vianda**
--   Parameters: **mes (integer) - mes de la vianda**
+-   Query: **colaboradorId (long) - ID del colaborador**
+-   Query: **anio (integer) - anio de la vianda**
+-   Query: **mes (integer) - mes de la vianda**
 
 ## GET /viandas/{qr}
 Obtener una vianda por qr
@@ -61,6 +61,13 @@ Modificar vianda llamada por qr
 
 -   Parameters: **qrVianda (string) - qr de la vianda**
 
+## PATCH /viandas/{qr}/estado
+Modificar el estado de la vianda por qr
+
+**Request**
+
+-   Parameters: **qr (string) - qr de la vianda**
+-   Query: **estado (EstadoViandaEnum) - nuevo estado de la vianda**
 
 ## Schemas
 
