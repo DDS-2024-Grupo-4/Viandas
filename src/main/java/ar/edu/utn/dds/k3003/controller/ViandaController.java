@@ -16,7 +16,7 @@ public class ViandaController {
   public ViandaController(Fachada fachada) {
     this.fachada = fachada;
   }
-
+  
   public void agregar(Context context) {
     try {
       ViandaDTO vianda = this.fachada.agregar(context.bodyAsClass(ViandaDTO.class));
@@ -28,7 +28,7 @@ public class ViandaController {
       context.result("Error Agregando Vianda");
     }
   }
-  
+
   public void agregarGenericas(Context context){
       System.out.println(this.fachada);
       try {
@@ -61,7 +61,7 @@ public class ViandaController {
       context.json(viandaDTO);
       context.status(HttpStatus.OK);
     } catch (NoSuchElementException ex) {
-      context.result(ex.getLocalizedMessage());
+    	context.result("Vianda no encontrada");
       context.status(HttpStatus.NOT_FOUND);
     }
   }

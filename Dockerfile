@@ -15,4 +15,4 @@ FROM openjdk:17-jdk-slim
 COPY --from=build /target/my-app-name-1.0-SNAPSHOT-jar-with-dependencies.jar webapp.jar
 # ENV PORT=8080
 EXPOSE 8080
-CMD ["java","-classpath","webapp.jar","ar.edu.utn.dds.k3003.app.WebApp"]
+ENTRYPOINT ["java","-classpath","webapp.jar","ar.edu.utn.dds.k3003.app.WebApp"]

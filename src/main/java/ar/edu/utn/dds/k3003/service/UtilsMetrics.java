@@ -9,8 +9,8 @@ import java.net.http.HttpResponse;
 
 public class UtilsMetrics {
     public static void actualizarViandasCreadas() {
-        Dotenv dotenv = Dotenv.load();
-        var url = dotenv.get("URL_METRICS_1");
+    	var env = System.getenv();
+        var url = env.get("URL_METRICS_1");
 
         url = url + "/incrementar";
         
@@ -29,8 +29,8 @@ public class UtilsMetrics {
     }
     
     public static void actualizarViandasEnTransporte(boolean aumentar) {
-        Dotenv dotenv = Dotenv.load();
-        var url = dotenv.get("URL_METRICS_2");
+    	var env = System.getenv();
+        var url = env.get("URL_METRICS_2");
 
         if (aumentar) {
             url = url + "/incrementar";
@@ -53,8 +53,8 @@ public class UtilsMetrics {
     }
     
     public static void actualizarViandasVencidas() {
-        Dotenv dotenv = Dotenv.load();
-        var url = dotenv.get("URL_METRICS_3");
+    	var env = System.getenv();
+        var url = env.get("URL_METRICS_3");
 
         url = url + "/incrementar";
         
