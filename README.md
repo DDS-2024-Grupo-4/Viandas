@@ -86,5 +86,5 @@ Modificar el estado de la vianda por qr
 - **qr (STRING)** - QR de la vianda
 - **colaboradorId (Long)** - Id del colaborador al que le pertenece la vianda
 - **heladeraId (integer)** - Id de la heladera que contiene la vianda
-- **estado (EstadoViandaEnum)** - Estado de la vianda (ASIGNADO / CREADO / EN_VIAJE / ENTREGADO)
+- **estado (EstadoViandaEnum)** - Estado de la vianda (PREPARADA / DEPOSITADA / EN_TRASLADO / RETIRADA / VENCIDA)
 - **fechaElaboracion (LocalDateTime)** - Fecha cuando se realizo la vianda
