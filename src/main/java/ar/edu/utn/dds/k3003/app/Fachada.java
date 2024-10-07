@@ -73,8 +73,10 @@ public class Fachada implements FachadaViandas {
 
   @Override
   public ViandaDTO buscarXQR(String qr) throws NoSuchElementException {
-    Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
-    return viandaMapper.map(viandaEncontrada);
+	  Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
+	  if ( viandaEncontrada == null)
+	  throw new NoSuchElementException("Vianda no encontrada");
+	  return viandaMapper.map(viandaEncontrada);
   }
 
   @Override

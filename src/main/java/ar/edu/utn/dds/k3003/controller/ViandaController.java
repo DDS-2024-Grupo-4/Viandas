@@ -16,13 +16,20 @@ public class ViandaController {
   public ViandaController(Fachada fachada) {
     this.fachada = fachada;
   }
-
+  
   public void agregar(Context context) {
+	  var viandaDTO = context.bodyAsClass(ViandaDTO.class);
+	  this.fachada.agregar(viandaDTO);
+	  context.json(viandaDTO);
+	  context.status(HttpStatus.CREATED);
+	  }
+  
+  /*public void agregar(Context context) {
     var viandaDTO = context.bodyAsClass(ViandaDTO.class);
     var viandaDTORta = this.fachada.agregar(viandaDTO);
     context.json(viandaDTORta);
     context.status(HttpStatus.CREATED);
-  }
+  }*/
   
   public void agregarGenericas(Context context){
       System.out.println(this.fachada);
@@ -56,7 +63,7 @@ public class ViandaController {
       var viandaDTO = this.fachada.buscarXQR(qr);
       context.json(viandaDTO);
     } catch (NoSuchElementException ex) {
-      context.result(ex.getLocalizedMessage());
+    	context.result("Vianda no encontrada");
       context.status(HttpStatus.NOT_FOUND);
     }
   }
