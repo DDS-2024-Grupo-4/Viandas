@@ -84,7 +84,19 @@ public class ViandaController {
     }
   }
   
-  public void modificarEstadoVianda(Context context) {
+  public void modificarEstadoVianda(Context ctx) {
+      try {
+          String qr = ctx.pathParam("qr");
+          EstadoViandaEnum estado = ctx.bodyAsClass(EstadoViandaEnum.class);
+
+          ViandaDTO viandaActualizada = fachada.modificarEstado(qr, estado);
+          ctx.json(viandaActualizada).status(200);
+      } catch (Exception e) {
+          ctx.status(400).result(e.getMessage());
+      }
+  }
+  
+  /*public void modificarEstadoVianda(Context context) {
 	  var qr = context.pathParamAsClass("qr", String.class).get();
 	  var estado = context.queryParamAsClass("estado", String.class).get();
 	  EstadoViandaEnum estadoVianda = this.fachada.buscarXQR(qr).getEstado();
@@ -97,7 +109,7 @@ public class ViandaController {
 	  
 	  var viandaDTO = this.fachada.modificarEstado(qr, estadoVianda);
       context.json(viandaDTO);
-  }
+  }*/
 
 
   public void modificarHeladeraXQR(Context context) {
