@@ -1,5 +1,6 @@
 package ar.edu.utn.dds.k3003.controller;
 
+import ar.edu.utn.dds.k3003.Exception.TemperaturasNoEncontradasException;
 import ar.edu.utn.dds.k3003.app.Fachada;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
@@ -68,13 +69,19 @@ public class ViandaController {
 
   public void evaluarVencimiento(Context context) {
     var qr = context.pathParamAsClass("qr", String.class).get();
-
     try {
-      var viandaDTO = this.fachada.evaluarVencimiento(qr);
-      context.json(viandaDTO);
+      this.fachada.buscarXQR(qr);
+      Boolean vencimiento = this.fachada.evaluarVencimiento(qr);
+      String Response = vencimiento ? "Vianda Vencida" : "Vianda No Vencida";
+      context.json(Response);
+      context.status(HttpStatus.OK);
     } catch (NoSuchElementException ex) {
-      context.result(ex.getLocalizedMessage());
+      context.result("Vianda no encontrada");
       context.status(HttpStatus.NOT_FOUND);
+    }
+    catch (TemperaturasNoEncontradasException ex) {
+      context.result("No se encontraron temperaturas");
+      context.status(HttpStatus.NOT_ACCEPTABLE);
     }
   }
 

@@ -1,8 +1,10 @@
 package ar.edu.utn.dds.k3003.app;
 
+import ar.edu.utn.dds.k3003.Exception.TemperaturasNoEncontradasException;
 import ar.edu.utn.dds.k3003.facades.FachadaHeladeras;
 import ar.edu.utn.dds.k3003.facades.FachadaViandas;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
+import ar.edu.utn.dds.k3003.facades.dtos.TemperaturaDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
 import ar.edu.utn.dds.k3003.model.Metrica;
 import ar.edu.utn.dds.k3003.model.Vianda;
@@ -87,9 +89,12 @@ public class Fachada implements FachadaViandas {
   @Override
   public boolean evaluarVencimiento(String qr) throws NoSuchElementException {
     Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
-    return fachadaHeladeras.obtenerTemperaturas(viandaEncontrada.getHeladeraId()).stream()
+    List<TemperaturaDTO> temperaturas = fachadaHeladeras.obtenerTemperaturas(viandaEncontrada.getHeladeraId());
+    if (temperaturas.isEmpty()) {
+      throw new TemperaturasNoEncontradasException("No se encontraron temperaturas para la heladera con ID: " + viandaEncontrada.getHeladeraId());
+    }
+    return temperaturas.stream()
         .anyMatch(temperaturaDTO -> temperaturaDTO.getTemperatura() >= 5);
-   
   }
 
   @Override
