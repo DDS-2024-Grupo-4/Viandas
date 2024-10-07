@@ -4,7 +4,6 @@ import ar.edu.utn.dds.k3003.Exception.TemperaturasNoEncontradasException;
 import ar.edu.utn.dds.k3003.app.Fachada;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
-import ar.edu.utn.dds.k3003.model.Vianda;
 import ar.edu.utn.dds.k3003.utils.utilsVianda;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
@@ -88,13 +87,9 @@ public class ViandaController {
   public void modificarEstadoVianda(Context context) {
 	  var qr = context.pathParamAsClass("qr", String.class).get();
 	  var estado = context.queryParamAsClass("estado", EstadoViandaEnum.class).get();
-      try {
-    	  ViandaDTO viandaActualizada = this.fachada.modificarEstado(qr, estado);
-          context.json(viandaActualizada);
-          context.status(HttpStatus.OK);
-      } catch (Exception e) {
-    	  context.status(HttpStatus.NOT_FOUND).result(e.getMessage());
-      }
+	  
+	  var viandaDTO = this.fachada.modificarEstado(qr, estado);
+      context.json(viandaDTO);
   }
 
 
