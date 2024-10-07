@@ -87,7 +87,7 @@ public class ViandaController {
   
   public void modificarEstadoVianda(Context context) {
 	  String qr = context.pathParam("qr");
-	  EstadoViandaEnum estado = context.queryParamAsClass("estado", EstadoViandaEnum.class).get();
+	  EstadoViandaEnum estado = context.bodyAsClass(EstadoViandaEnum.class);
       try {
     	  ViandaDTO viandaActualizada = this.fachada.modificarEstado(qr, estado);
           context.json(viandaActualizada);
