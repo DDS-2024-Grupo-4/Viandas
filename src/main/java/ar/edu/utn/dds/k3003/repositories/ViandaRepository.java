@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
@@ -22,8 +25,93 @@ public class ViandaRepository {
   public ViandaRepository(final EntityManager entityManager) {
     this.entityManager = entityManager;
   }
+  
+  public Vianda save(Vianda vianda) throws NoSuchElementException {
 
-  public Vianda save(Vianda vianda) {
+      if (Objects.isNull(vianda.getId())) {
+          entityManager.getTransaction().begin();
+          entityManager.persist(vianda);
+          entityManager.getTransaction().commit();
+      }
+
+      return vianda;
+  }
+
+  public Vianda buscarXQR(String qr) {
+      TypedQuery<Vianda> query = entityManager.createQuery("SELECT v FROM Vianda v WHERE v.codigoQR = :qr", Vianda.class);
+      query.setParameter("qr", qr);
+      List<Vianda> results = query.getResultList();
+      return results.isEmpty() ? null : results.get(0);
+  }
+
+  public List<Vianda> getViandas() {
+      TypedQuery<Vianda> query = entityManager.createQuery("SELECT v FROM Vianda v", Vianda.class);
+      return query.getResultList();
+  }
+
+  public Vianda findById(Long id) {
+      Vianda vianda = entityManager.find(Vianda.class, id);
+      if (vianda == null) {
+          throw new NoSuchElementException(String.format("No hay una vianda de id: %s", id));
+      }
+      return vianda;
+  }
+
+
+  public Vianda update(Vianda vianda) {
+      EntityTransaction transaction = entityManager.getTransaction();
+      try {
+          transaction.begin();
+          Vianda existingVianda = entityManager.find(Vianda.class, vianda.getId());
+          if (existingVianda != null) {
+              existingVianda.setHeladeraId(vianda.getHeladeraId());
+              entityManager.merge(existingVianda);
+          } else {
+              throw new NoSuchElementException("No se encontró la vianda a actualizar");
+          }
+          transaction.commit();
+      } catch (Exception e) {
+          transaction.rollback();
+          throw e;
+      }
+      return vianda;
+  }
+  
+  public List<Vianda> obtenerXColIDAndAnioAndMes(
+	      Long colaboradorId,
+	      Integer mes,
+	      Integer anio
+	  ) {
+	    YearMonth yearMonth = YearMonth.of(anio, mes);
+	    LocalDateTime startOfMonth = yearMonth.atDay(1)
+	        .atStartOfDay();
+	    LocalDateTime endOfMonth = yearMonth.atEndOfMonth()
+	        .atTime(LocalTime.MAX);
+
+	    TypedQuery<Vianda> query = entityManager.createQuery(
+	        "SELECT v FROM Vianda v WHERE v.colaboradorId = :colaboradorId "
+	            + "AND v.fechaElaboracion >= :startOfMonth AND v.fechaElaboracion <= :endOfMonth",
+	        Vianda.class
+	    );
+	    query.setParameter("colaboradorId", colaboradorId);
+	    query.setParameter("startOfMonth", startOfMonth);
+	    query.setParameter("endOfMonth", endOfMonth);
+
+	    return query.getResultList();
+	  }
+
+  public Vianda modificarEstado(String qr, EstadoViandaEnum estado) {
+
+      entityManager.getTransaction().begin();
+      Vianda vianda = this.buscarXQR(qr);
+      vianda.setEstado(estado);
+      this.save(vianda);
+      entityManager.merge(vianda);
+      entityManager.getTransaction().commit();
+      return vianda;
+  }
+
+  /*public Vianda save(Vianda vianda) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
@@ -84,7 +172,7 @@ public class ViandaRepository {
       this.save(vianda);
       entityManager.getTransaction().commit();
       return vianda;
-  }
+  }*/
 
   public void clearDB() {
     entityManager.getTransaction()
