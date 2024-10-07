@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import lombok.Getter;
@@ -24,30 +25,24 @@ public class ViandaRepository {
     this.entityManager = entityManager;
   }
 
-  public Vianda save(Vianda vianda) throws NoSuchElementException, ConstraintViolationException {
-    EntityTransaction transaction = null;
+  public Vianda save(Vianda vianda) {
+    EntityTransaction transaction = entityManager.getTransaction();
     try {
-      transaction = entityManager.getTransaction();
       transaction.begin();
-      if (Objects.isNull(vianda.getId())) {
+      if (vianda.getId() == null) {
         entityManager.persist(vianda);
-      }
-      else {
-        vianda = entityManager.merge(vianda);
+      } else {
+        entityManager.merge(vianda);
       }
       transaction.commit();
-
     } catch (PersistenceException pe) {
-      if (pe.getCause() instanceof ConstraintViolationException) {
-        if (Objects.nonNull(transaction)) {
-          transaction.rollback();
-        }
-        throw new RuntimeException("Ya existe una vianda con el mismo codigo QR");
-      }
-    } finally {
-      if (Objects.nonNull(transaction) && transaction.isActive()) {
+      if (transaction.isActive()) {
         transaction.rollback();
       }
+      if (pe.getCause() instanceof ConstraintViolationException) {
+        throw new RuntimeException("Ya existe una vianda con el mismo código QR", null);
+      }
+      throw pe;
     }
     return vianda;
   }
@@ -56,7 +51,8 @@ public class ViandaRepository {
     TypedQuery<Vianda> query =
         entityManager.createQuery("SELECT v FROM Vianda v WHERE v.qr = :qr", Vianda.class);
     query.setParameter("qr", qr);
-    return query.getSingleResult();
+    List<Vianda> resultados = query.getResultList();
+    return resultados.isEmpty() ? null : resultados.get(0);
   }
 
   public List<Vianda> obtenerXColIDAndAnioAndMes(

@@ -18,10 +18,15 @@ public class ViandaController {
   }
 
   public void agregar(Context context) {
-    var viandaDTO = context.bodyAsClass(ViandaDTO.class);
-    var viandaDTORta = this.fachada.agregar(viandaDTO);
-    context.json(viandaDTORta);
-    context.status(HttpStatus.CREATED);
+    try {
+      ViandaDTO vianda = this.fachada.agregar(context.bodyAsClass(ViandaDTO.class));
+      context.json(vianda);
+      context.status(HttpStatus.CREATED);
+    }
+    catch (NoSuchElementException e) {
+      context.status(HttpStatus.BAD_REQUEST);
+      context.result("Error Agregando Vianda");
+    }
   }
   
   public void agregarGenericas(Context context){
@@ -51,10 +56,10 @@ public class ViandaController {
 
   public void obtenerXQR(Context context) {
     var qr = context.pathParamAsClass("qr", String.class).get();
-
     try {
       var viandaDTO = this.fachada.buscarXQR(qr);
       context.json(viandaDTO);
+      context.status(HttpStatus.OK);
     } catch (NoSuchElementException ex) {
       context.result(ex.getLocalizedMessage());
       context.status(HttpStatus.NOT_FOUND);

@@ -33,15 +33,14 @@ public class Fachada implements FachadaViandas {
 
   @Override
   public ViandaDTO agregar(ViandaDTO viandaDTO) {
-    Vianda vianda =
-        new Vianda(viandaDTO.getCodigoQR(),
+    Vianda vianda = new Vianda(viandaDTO.getCodigoQR(),
             viandaDTO.getColaboradorId(),
             viandaDTO.getHeladeraId(),
             EstadoViandaEnum.PREPARADA,
             viandaDTO.getFechaElaboracion());
-    vianda = this.viandaRepository.save(vianda);
+    this.viandaRepository.save(vianda);
     UtilsMetrics.actualizarViandasCreadas();
-    return viandaMapper.map(vianda);
+    return viandaDTO;
   }
 
   @Override
@@ -74,6 +73,9 @@ public class Fachada implements FachadaViandas {
   @Override
   public ViandaDTO buscarXQR(String qr) throws NoSuchElementException {
     Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
+    if (viandaEncontrada == null) {
+      throw new NoSuchElementException("Vianda no encontrada");
+    }
     return viandaMapper.map(viandaEncontrada);
   }
 
