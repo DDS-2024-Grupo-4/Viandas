@@ -82,7 +82,6 @@ public class ViandaRepository {
       Vianda vianda = this.buscarXQR(qr);
       vianda.setEstado(estado);
       this.save(vianda);
-      entityManager.merge(vianda);
       entityManager.getTransaction().commit();
       return vianda;
   }
