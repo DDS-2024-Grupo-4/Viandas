@@ -87,7 +87,7 @@ public class ViandaController {
   public void modificarEstadoVianda(Context context) {
       try {
           String qr = context.pathParam("qr");
-          String estado = context.bodyAsClass(String.class);
+          String estado = context.queryParamAsClass("estado", String.class).get();
           EstadoViandaEnum estadoVianda = null;
           
           if(estado.equals("PREPARADA")) {estadoVianda = EstadoViandaEnum.PREPARADA;}
