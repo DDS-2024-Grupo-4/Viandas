@@ -4,6 +4,7 @@ import ar.edu.utn.dds.k3003.app.Fachada;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
 import ar.edu.utn.dds.k3003.model.Vianda;
+import ar.edu.utn.dds.k3003.utils.utilsVianda;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import java.util.NoSuchElementException;
@@ -21,6 +22,18 @@ public class ViandaController {
     var viandaDTORta = this.fachada.agregar(viandaDTO);
     context.json(viandaDTORta);
     context.status(HttpStatus.CREATED);
+  }
+  
+  public void agregarGenericas(Context context){
+      System.out.println(this.fachada);
+      try {
+          utilsVianda.crearViandas1(this.fachada);
+          utilsVianda.crearViandas2(this.fachada);
+          utilsVianda.crearViandas3(this.fachada);
+          context.status(HttpStatus.CREATED).result("Viandas genericas creadas");
+      } catch (Exception e) {
+          context.status(HttpStatus.INTERNAL_SERVER_ERROR).result("Error de Servidor: " + e.getMessage());
+      }
   }
 
   public void obtenerXColIDAndAnioAndMes(Context context) {
