@@ -86,9 +86,16 @@ public class ViandaController {
   
   public void modificarEstadoVianda(Context context) {
 	  var qr = context.pathParamAsClass("qr", String.class).get();
-	  var estado = context.queryParamAsClass("estado", EstadoViandaEnum.class).get();
+	  var estado = context.queryParamAsClass("estado", String.class).get();
+	  EstadoViandaEnum estadoVianda = null;
 	  
-	  var viandaDTO = this.fachada.modificarEstado(qr, estado);
+	  if(estado == "PREPARADA") {estadoVianda = EstadoViandaEnum.PREPARADA;}
+	  if(estado == "DEPOSITADA") {estadoVianda = EstadoViandaEnum.DEPOSITADA;}
+	  if(estado == "EN_TRASLADO") {estadoVianda = EstadoViandaEnum.EN_TRASLADO;}
+	  if(estado == "RETIRADA") {estadoVianda = EstadoViandaEnum.RETIRADA;}
+	  if(estado == "VENCIDA") {estadoVianda = EstadoViandaEnum.VENCIDA;}
+	  
+	  var viandaDTO = this.fachada.modificarEstado(qr, estadoVianda);
       context.json(viandaDTO);
   }
 
