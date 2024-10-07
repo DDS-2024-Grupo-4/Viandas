@@ -84,15 +84,22 @@ public class ViandaController {
     }
   }
   
-  public void modificarEstadoVianda(Context ctx) {
+  public void modificarEstadoVianda(Context context) {
       try {
-          String qr = ctx.pathParam("qr");
-          EstadoViandaEnum estado = ctx.bodyAsClass(EstadoViandaEnum.class);
+          String qr = context.pathParam("qr");
+          String estado = context.bodyAsClass(String.class);
+          EstadoViandaEnum estadoVianda = null;
+          
+          if(estado.equals("PREPARADA")) {estadoVianda = EstadoViandaEnum.PREPARADA;}
+    	  if(estado.equals("DEPOSITADA")) {estadoVianda = EstadoViandaEnum.DEPOSITADA;}
+    	  if(estado.equals("EN_TRASLADO")) {estadoVianda = EstadoViandaEnum.EN_TRASLADO;}
+    	  if(estado.equals("RETIRADA")) {estadoVianda = EstadoViandaEnum.RETIRADA;}
+    	  if(estado.equals("VENCIDA")) {estadoVianda = EstadoViandaEnum.VENCIDA;}
 
-          ViandaDTO viandaActualizada = fachada.modificarEstado(qr, estado);
-          ctx.json(viandaActualizada).status(200);
+          ViandaDTO viandaActualizada = fachada.modificarEstado(qr, estadoVianda);
+          context.json(viandaActualizada).status(200);
       } catch (Exception e) {
-          ctx.status(400).result(e.getMessage());
+    	  context.status(400).result(e.getMessage());
       }
   }
   
