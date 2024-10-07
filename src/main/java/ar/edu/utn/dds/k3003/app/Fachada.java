@@ -44,8 +44,7 @@ public class Fachada implements FachadaViandas {
   }
 
   @Override
-  public ViandaDTO modificarEstado(String qr, EstadoViandaEnum estadoViandaEnum)
-      throws NoSuchElementException {
+  public ViandaDTO modificarEstado(String qr, EstadoViandaEnum estadoViandaEnum) throws NoSuchElementException {
     Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
     EstadoViandaEnum estadoActual = viandaEncontrada.getEstado();
     if(estadoActual == EstadoViandaEnum.PREPARADA && estadoViandaEnum == EstadoViandaEnum.EN_TRASLADO) {

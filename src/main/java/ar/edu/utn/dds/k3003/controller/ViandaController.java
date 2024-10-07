@@ -87,7 +87,7 @@ public class ViandaController {
   public void modificarEstadoVianda(Context context) {
 	  var qr = context.pathParamAsClass("qr", String.class).get();
 	  var estado = context.queryParamAsClass("estado", String.class).get();
-	  EstadoViandaEnum estadoVianda = null;
+	  EstadoViandaEnum estadoVianda = this.fachada.buscarXQR(qr).getEstado();
 	  
 	  if(estado == "PREPARADA") {estadoVianda = EstadoViandaEnum.PREPARADA;}
 	  if(estado == "DEPOSITADA") {estadoVianda = EstadoViandaEnum.DEPOSITADA;}
