@@ -27,7 +27,9 @@ public class ViandaController {
   public void agregarGenericas(Context context){
       System.out.println(this.fachada);
       try {
-          utilsVianda.crearViandas(this.fachada);
+          utilsVianda.crearViandas1(this.fachada);
+          utilsVianda.crearViandas2(this.fachada);
+          utilsVianda.crearViandas3(this.fachada);
           context.status(HttpStatus.CREATED).result("Viandas genericas creadas");
       } catch (Exception e) {
           context.status(HttpStatus.INTERNAL_SERVER_ERROR).result("Error de Servidor: " + e.getMessage());

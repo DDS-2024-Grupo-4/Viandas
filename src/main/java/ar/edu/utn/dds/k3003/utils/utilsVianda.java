@@ -10,16 +10,19 @@ import java.util.List;
 
 public class utilsVianda {
 
-    public static void crearViandas(Fachada fachada){
+    public static void crearViandas1(Fachada fachada){
             ViandaDTO viandaNuevaDTO1 = new ViandaDTO("abc", LocalDateTime.now(),EstadoViandaEnum.PREPARADA,1L,1);
             viandaNuevaDTO1.setId(1L);
-            ViandaDTO viandaNuevaDTO2 = new ViandaDTO("fgh", LocalDateTime.now(),EstadoViandaEnum.PREPARADA,2L,2);
-            viandaNuevaDTO2.setId(2L);
-            ViandaDTO viandaNuevaDTO3 = new ViandaDTO("jkl", LocalDateTime.now(),EstadoViandaEnum.PREPARADA,3L,3);
-            viandaNuevaDTO3.setId(3L);
-
             fachada.agregar(viandaNuevaDTO1);
-            fachada.agregar(viandaNuevaDTO2);
-            fachada.agregar(viandaNuevaDTO3);
     }
+    public static void crearViandas2(Fachada fachada){
+        ViandaDTO viandaNuevaDTO2 = new ViandaDTO("fgh", LocalDateTime.now(),EstadoViandaEnum.PREPARADA,2L,2);
+        viandaNuevaDTO2.setId(2L);
+        fachada.agregar(viandaNuevaDTO2);
+}
+    public static void crearViandas3(Fachada fachada){
+        ViandaDTO viandaNuevaDTO3 = new ViandaDTO("jkl", LocalDateTime.now(),EstadoViandaEnum.PREPARADA,3L,3);
+        viandaNuevaDTO3.setId(3L);
+        fachada.agregar(viandaNuevaDTO3);
+}
 }
