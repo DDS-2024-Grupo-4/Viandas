@@ -87,7 +87,12 @@ public class Fachada implements FachadaViandas {
     if (temperaturas.isEmpty()) {
       throw new TemperaturasNoEncontradasException("No se encontraron temperaturas para la heladera con ID: " + viandaEncontrada.getHeladeraId());
     }
-    return temperaturas.stream().anyMatch(temperaturaDTO -> temperaturaDTO.getTemperatura() >= 5);
+    boolean valor = temperaturas.stream().anyMatch(temperaturaDTO -> temperaturaDTO.getTemperatura() >= 5);
+    if(valor == true){
+      modificarEstado(qr, EstadoViandaEnum.VENCIDA);
+      return valor;
+    }
+    return valor;
   }
 
   @Override
