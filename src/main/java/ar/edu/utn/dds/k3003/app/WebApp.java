@@ -22,14 +22,12 @@ public class WebApp {
     var objectMapper = createObjectMapper();
     var fachada = new Fachada();
     fachada.setHeladerasProxy(new HeladerasProxy(objectMapper));
-    var port = Integer.parseInt(env.getOrDefault("PORT", "8080"));
+    var port = Integer.parseInt(env.getOrDefault("PORT", "8089"));
     var viandasController = new ViandaController(fachada);
     var app = Javalin.create(config -> {
         config.jsonMapper(new JavalinJackson().updateMapper(WebApp::configureObjectMapper));
     }).start(port);
-
     //Error de Servidor: Could not find /.env on the classpath
-    
     app.post("/viandas", viandasController::agregar);
     app.post("/viandasGenericas", viandasController::agregarGenericas);
     app.get("/viandas/search/findByColaboradorId", viandasController::obtenerXColIDAndAnioAndMes);
