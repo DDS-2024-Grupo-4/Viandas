@@ -6,9 +6,7 @@ import ar.edu.utn.dds.k3003.facades.FachadaViandas;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.TemperaturaDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
-import ar.edu.utn.dds.k3003.model.Metrica;
 import ar.edu.utn.dds.k3003.model.Vianda;
-import ar.edu.utn.dds.k3003.repositories.MetricaRepository;
 import ar.edu.utn.dds.k3003.repositories.ViandaMapper;
 import ar.edu.utn.dds.k3003.repositories.ViandaRepository;
 import ar.edu.utn.dds.k3003.service.UtilsMetrics;
@@ -46,21 +44,17 @@ public class Fachada implements FachadaViandas {
   }
 
   @Override
-  public ViandaDTO modificarEstado(String qr, EstadoViandaEnum estadoViandaEnum)
-      throws NoSuchElementException {
-    Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
-    EstadoViandaEnum estadoActual = viandaEncontrada.getEstado();
-    if(estadoActual == EstadoViandaEnum.PREPARADA && estadoViandaEnum == EstadoViandaEnum.EN_TRASLADO) {
+  public ViandaDTO modificarEstado(String qr, EstadoViandaEnum estadoViandaEnum) throws NoSuchElementException {
+    Vianda viandaEncontrada = viandaRepository.modificarEstado(qr, estadoViandaEnum);
+    if(estadoViandaEnum == EstadoViandaEnum.EN_TRASLADO) {
     	UtilsMetrics.actualizarViandasEnTransporte(true);
     }
-    if(estadoActual == EstadoViandaEnum.EN_TRASLADO && estadoViandaEnum == EstadoViandaEnum.DEPOSITADA) {
+    if(estadoViandaEnum == EstadoViandaEnum.DEPOSITADA) {
     	UtilsMetrics.actualizarViandasEnTransporte(false);
     }
     if(estadoViandaEnum == EstadoViandaEnum.VENCIDA) {
     	UtilsMetrics.actualizarViandasVencidas();
     }
-    viandaEncontrada.setEstado(estadoViandaEnum);
-    viandaEncontrada = viandaRepository.save(viandaEncontrada);
     return viandaMapper.map(viandaEncontrada);
   }
 
@@ -88,20 +82,24 @@ public class Fachada implements FachadaViandas {
 
   @Override
   public boolean evaluarVencimiento(String qr) throws NoSuchElementException {
-    Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
+    ViandaDTO viandaEncontrada = buscarXQR(qr);
     List<TemperaturaDTO> temperaturas = fachadaHeladeras.obtenerTemperaturas(viandaEncontrada.getHeladeraId());
     if (temperaturas.isEmpty()) {
       throw new TemperaturasNoEncontradasException("No se encontraron temperaturas para la heladera con ID: " + viandaEncontrada.getHeladeraId());
     }
-    return temperaturas.stream()
-        .anyMatch(temperaturaDTO -> temperaturaDTO.getTemperatura() >= 5);
+    boolean valor = temperaturas.stream().anyMatch(temperaturaDTO -> temperaturaDTO.getTemperatura() >= 5);
+    if(valor == true){
+      modificarEstado(qr, EstadoViandaEnum.VENCIDA);
+      return valor;
+    }
+    return valor;
   }
 
   @Override
   public ViandaDTO modificarHeladera(String qr, int nuevaHeladera) {
     Vianda viandaEncontrada = viandaRepository.buscarXQR(qr);
     viandaEncontrada.setHeladeraId(nuevaHeladera);
-    viandaEncontrada = viandaRepository.save(viandaEncontrada);
+    viandaEncontrada = viandaRepository.update(viandaEncontrada);
     return viandaMapper.map(viandaEncontrada);
   }
 

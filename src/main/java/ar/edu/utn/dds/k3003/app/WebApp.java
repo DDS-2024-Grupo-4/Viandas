@@ -27,13 +27,14 @@ public class WebApp {
     var app = Javalin.create(config -> {
         config.jsonMapper(new JavalinJackson().updateMapper(WebApp::configureObjectMapper));
     }).start(port);
-    //Error de Servidor: Could not find /.env on the classpath
+    
     app.post("/viandas", viandasController::agregar);
     app.post("/viandasGenericas", viandasController::agregarGenericas);
-    app.get("/viandas/search/findByColaboradorId", viandasController::obtenerXColIDAndAnioAndMes);
+    app.get("/viandas/search/findByColaboradorIdAndAnioAndMes", viandasController::obtenerXColIDAndAnioAndMes);
     app.get("/viandas/{qr}", viandasController::obtenerXQR);
     app.get("/viandas/{qr}/vencida", viandasController::evaluarVencimiento);
     app.patch("/viandas/{qrVianda}", viandasController::modificarHeladeraXQR);
+    app.patch("/viandas/{qr}/estado", viandasController::modificarEstadoVianda);
     app.delete("/clear", viandasController::limpiarDB);
 
   }

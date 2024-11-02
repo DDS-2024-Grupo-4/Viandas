@@ -4,7 +4,6 @@ import ar.edu.utn.dds.k3003.Exception.TemperaturasNoEncontradasException;
 import ar.edu.utn.dds.k3003.app.Fachada;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
-import ar.edu.utn.dds.k3003.model.Vianda;
 import ar.edu.utn.dds.k3003.utils.utilsVianda;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
@@ -84,10 +83,44 @@ public class ViandaController {
       context.status(HttpStatus.NOT_ACCEPTABLE);
     }
   }
+  
+  public void modificarEstadoVianda(Context context) {
+      try {
+          String qr = context.pathParam("qr");
+          String estado = context.queryParamAsClass("estado", String.class).get();
+          EstadoViandaEnum estadoVianda = null;
+          
+          if(estado.equals("PREPARADA")) {estadoVianda = EstadoViandaEnum.PREPARADA;}
+    	  if(estado.equals("DEPOSITADA")) {estadoVianda = EstadoViandaEnum.DEPOSITADA;}
+    	  if(estado.equals("EN_TRASLADO")) {estadoVianda = EstadoViandaEnum.EN_TRASLADO;}
+    	  if(estado.equals("RETIRADA")) {estadoVianda = EstadoViandaEnum.RETIRADA;}
+    	  if(estado.equals("VENCIDA")) {estadoVianda = EstadoViandaEnum.VENCIDA;}
+
+          ViandaDTO viandaActualizada = fachada.modificarEstado(qr, estadoVianda);
+          context.json(viandaActualizada).status(200);
+      } catch (Exception e) {
+    	  context.status(400).result(e.getMessage());
+      }
+  }
+  
+  /*public void modificarEstadoVianda(Context context) {
+	  var qr = context.pathParamAsClass("qr", String.class).get();
+	  var estado = context.queryParamAsClass("estado", String.class).get();
+	  EstadoViandaEnum estadoVianda = this.fachada.buscarXQR(qr).getEstado();
+	  
+	  if(estado == "PREPARADA") {estadoVianda = EstadoViandaEnum.PREPARADA;}
+	  if(estado == "DEPOSITADA") {estadoVianda = EstadoViandaEnum.DEPOSITADA;}
+	  if(estado == "EN_TRASLADO") {estadoVianda = EstadoViandaEnum.EN_TRASLADO;}
+	  if(estado == "RETIRADA") {estadoVianda = EstadoViandaEnum.RETIRADA;}
+	  if(estado == "VENCIDA") {estadoVianda = EstadoViandaEnum.VENCIDA;}
+	  
+	  var viandaDTO = this.fachada.modificarEstado(qr, estadoVianda);
+      context.json(viandaDTO);
+  }*/
+
 
   public void modificarHeladeraXQR(Context context) {
-    var qr = context.pathParamAsClass("qrVianda", String.class)
-        .get();
+    var qr = context.pathParamAsClass("qrVianda", String.class).get();
     var heladeraId = context.queryParamAsClass("heladeraId",Integer.class).get();
 
     var viandaDTO = this.fachada.modificarHeladera(qr, heladeraId);
