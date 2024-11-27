@@ -5,15 +5,15 @@
     http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
 
-    <persistence-unit name="viandas" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="viandas_2fgd" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class> ar.edu.utn.dds.k3003.model.Vianda</class>
 
         <properties>
             <property name="javax.persistence.jdbc.user" value="viandasdb_user"/> <!--viandas_189n_user-->
-            <property name="javax.persistence.jdbc.password" value="MQKfoebET4Azl5H4dNjLlT8aw43kOTVi" /> <!--GQRGvr5FyUb9WXk2THJ9TiSInWOmUlHK-->
+            <property name="javax.persistence.jdbc.password" value="UNK4HpPGJfXrBubBAxtZ69AgUcuHWif0" /> <!--GQRGvr5FyUb9WXk2THJ9TiSInWOmUlHK-->
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://dpg-cs04n4d2ng1s73em0u10-a.oregon-postgres.render.com/viandasdb"/> <!--//dpg-cplra2ij1k6c739pkip0-a.oregon-postgres.render.com/viandas_189n-->
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://viandasdb_user:UNK4HpPGJfXrBubBAxtZ69AgUcuHWif0@dpg-ct3q8s5umphs73e0oflg-a.oregon-postgres.render.com/viandas_2fgd"/> <!--//dpg-cplra2ij1k6c739pkip0-a.oregon-postgres.render.com/viandas_189n-->
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
             <property name="hibernate.default_schema" value="public"/>
