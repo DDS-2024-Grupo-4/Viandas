@@ -33,6 +33,7 @@ public class WebApp {
     app.post("/viandas", viandasController::agregar);
     app.post("/viandasDepositar", viandasController::agregarYDepositar);
     app.post("/viandasGenericas", viandasController::agregarGenericas);
+    app.post("/viandasGenericasDepositar", viandasController::agregarGenericasYDepositarlas);
     app.get("/viandas/search/findByColaboradorId", viandasController::obtenerXColIDAndAnioAndMes);
     app.get("/viandas/{qr}", viandasController::obtenerXQR);
     app.get("/viandas/{qr}/vencida", viandasController::evaluarVencimiento);

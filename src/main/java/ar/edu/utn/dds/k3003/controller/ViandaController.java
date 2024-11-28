@@ -44,12 +44,22 @@ public class ViandaController {
   public void agregarGenericas(Context context){
       System.out.println(this.fachada);
       try {
-          utilsVianda.crearViandas1(this.fachada);
-          utilsVianda.crearViandas2(this.fachada);
-          utilsVianda.crearViandas3(this.fachada);
+          utilsVianda.crearViandasGenericas(this.fachada);
           context.status(HttpStatus.CREATED).result("Viandas genericas creadas");
       } catch (Exception e) {
-          context.status(HttpStatus.INTERNAL_SERVER_ERROR).result("Error de Servidor: " + e.getMessage());
+    	  context.status(HttpStatus.BAD_REQUEST);
+	      context.result("Error Creando Viandas Genericas");
+      }
+  }
+  
+  public void agregarGenericasYDepositarlas(Context context){
+      System.out.println(this.fachada);
+      try {
+          utilsVianda.crearViandasGenericasYDepositarlas(this.fachada);
+          context.status(HttpStatus.CREATED).result("Viandas genericas creadas y depositadas");
+      } catch (Exception e) {
+    	  context.status(HttpStatus.BAD_REQUEST);
+	      context.result("Error Creando y Depositando Viandas Genericas");
       }
   }
 
