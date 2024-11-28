@@ -44,6 +44,11 @@ public class Fachada implements FachadaViandas {
     UtilsMetrics.actualizarViandasCreadas();
     return viandaDTO;
   }
+  
+  public ViandaDTO agregarYDepositar(ViandaDTO viandaDTO) {
+	  fachadaHeladeras.depositar(viandaDTO.getHeladeraId(), viandaDTO.getCodigoQR());
+	  return agregar(viandaDTO);
+  }
 
   @Override
   public ViandaDTO modificarEstado(String qr, EstadoViandaEnum estadoViandaEnum)

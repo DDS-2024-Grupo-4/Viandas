@@ -12,6 +12,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -39,8 +40,21 @@ public class HeladerasProxy implements FachadaHeladeras {
 
     @Override
     public void depositar(Integer integer, String s) throws NoSuchElementException {
+        try {
+              Response<Void> response = service.depositar(integer,s).execute();
 
-    }
+              if (!response.isSuccessful()) {
+                  if (response.code() == HttpStatus.NOT_FOUND.getCode()) {
+                      throw new NoSuchElementException("No se encontró la heladera para el deposito: " + integer);
+                  } else {
+                      throw new RuntimeException("Error al realizar el deposito: " + response.errorBody().string());
+                  }
+              }
+          } catch (IOException e) {
+              throw new RuntimeException("Error en la comunicación con el servicio de heladeras", e);
+          }
+
+      }
 
     @Override
     public Integer cantidadViandas(Integer integer) throws NoSuchElementException {

@@ -11,7 +11,7 @@ import java.util.List;
 public class utilsVianda {
 
     public static void crearViandas1(Fachada fachada){
-            ViandaDTO viandaNuevaDTO1 = new ViandaDTO("abc", LocalDateTime.now(),EstadoViandaEnum.PREPARADA,1L,1);
+            ViandaDTO viandaNuevaDTO1 = new ViandaDTO("asd", LocalDateTime.now(),EstadoViandaEnum.PREPARADA,1L,1);
             viandaNuevaDTO1.setId(1L);
             fachada.agregar(viandaNuevaDTO1);
     }

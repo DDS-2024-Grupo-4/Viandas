@@ -31,6 +31,7 @@ public class WebApp {
     //Error de Servidor: Could not find /.env on the classpath
     
     app.post("/viandas", viandasController::agregar);
+    app.post("/viandasDepositar", viandasController::agregarYDepositar);
     app.post("/viandasGenericas", viandasController::agregarGenericas);
     app.get("/viandas/search/findByColaboradorId", viandasController::obtenerXColIDAndAnioAndMes);
     app.get("/viandas/{qr}", viandasController::obtenerXQR);

@@ -29,6 +29,17 @@ public class ViandaController {
       context.result("Error Agregando Vianda");
     }
   }
+  
+  public void agregarYDepositar(Context context) {
+	  try {
+		  ViandaDTO vianda = this.fachada.agregarYDepositar(context.bodyAsClass(ViandaDTO.class));
+	      context.json(vianda);
+	      context.status(HttpStatus.CREATED);
+	  } catch (NoSuchElementException e) {
+		  context.status(HttpStatus.BAD_REQUEST);
+	      context.result("Error Agregando y Depositando Vianda");
+	  }
+  }
 
   public void agregarGenericas(Context context){
       System.out.println(this.fachada);
