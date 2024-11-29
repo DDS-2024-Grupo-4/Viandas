@@ -48,29 +48,20 @@ public class ViandaRepository {
   }
 
   public Vianda buscarXQR(String qr) {
-    TypedQuery<Vianda> query =
-        entityManager.createQuery("SELECT v FROM Vianda v WHERE v.qr = :qr", Vianda.class);
+    TypedQuery<Vianda> query = entityManager.createQuery("SELECT v FROM Vianda v WHERE v.qr = :qr", Vianda.class);
     query.setParameter("qr", qr);
     List<Vianda> resultados = query.getResultList();
     return resultados.isEmpty() ? null : resultados.get(0);
   }
 
-  public List<Vianda> obtenerXColIDAndAnioAndMes(
-      Long colaboradorId,
-      Integer mes,
-      Integer anio
-  ) {
+  public List<Vianda> obtenerXColIDAndAnioAndMes(Long colaboradorId, Integer mes, Integer anio) {
     YearMonth yearMonth = YearMonth.of(anio, mes);
-    LocalDateTime startOfMonth = yearMonth.atDay(1)
-        .atStartOfDay();
-    LocalDateTime endOfMonth = yearMonth.atEndOfMonth()
-        .atTime(LocalTime.MAX);
+    LocalDateTime startOfMonth = yearMonth.atDay(1).atStartOfDay();
+    LocalDateTime endOfMonth = yearMonth.atEndOfMonth().atTime(LocalTime.MAX);
 
     TypedQuery<Vianda> query = entityManager.createQuery(
         "SELECT v FROM Vianda v WHERE v.colaboradorId = :colaboradorId "
-            + "AND v.fechaElaboracion >= :startOfMonth AND v.fechaElaboracion <= :endOfMonth",
-        Vianda.class
-    );
+            + "AND v.fechaElaboracion >= :startOfMonth AND v.fechaElaboracion <= :endOfMonth",Vianda.class);
     query.setParameter("colaboradorId", colaboradorId);
     query.setParameter("startOfMonth", startOfMonth);
     query.setParameter("endOfMonth", endOfMonth);
@@ -79,18 +70,15 @@ public class ViandaRepository {
   }
 
   public void clearDB() {
-    entityManager.getTransaction()
-        .begin();
+    entityManager.getTransaction().begin();
     try {
-      entityManager.createQuery("DELETE FROM Vianda")
-          .executeUpdate();
+      entityManager.createQuery("DELETE FROM Vianda").executeUpdate();
       entityManager.createNativeQuery("ALTER SEQUENCE viandas_id_seq RESTART WITH 1").executeUpdate();
-      entityManager.getTransaction()
-          .commit();
+      entityManager.getTransaction().commit();
     } catch (Exception e) {
-      entityManager.getTransaction()
-          .rollback();
+      entityManager.getTransaction().rollback();
       throw e;
     }
+    entityManager.close();
   }
 }

@@ -87,6 +87,25 @@ public class ViandaController {
       context.status(HttpStatus.NOT_FOUND);
     }
   }
+  
+  public void modificarEstadoVianda(Context context) {
+      try {
+          var qr = context.pathParam("qr");
+          var estado = context.queryParamAsClass("estado", String.class).get();
+          EstadoViandaEnum estadoVianda = null;
+          
+          if(estado.equals("PREPARADA")) {estadoVianda = EstadoViandaEnum.PREPARADA;}
+    	  if(estado.equals("DEPOSITADA")) {estadoVianda = EstadoViandaEnum.DEPOSITADA;}
+    	  if(estado.equals("EN_TRASLADO")) {estadoVianda = EstadoViandaEnum.EN_TRASLADO;}
+    	  if(estado.equals("RETIRADA")) {estadoVianda = EstadoViandaEnum.RETIRADA;}
+    	  if(estado.equals("VENCIDA")) {estadoVianda = EstadoViandaEnum.VENCIDA;}
+
+          ViandaDTO viandaActualizada = fachada.modificarEstado(qr, estadoVianda);
+          context.json(viandaActualizada).status(200);
+      } catch (Exception e) {
+    	  context.status(400).result(e.getMessage());
+      }
+  }
 
   public void evaluarVencimiento(Context context) {
     var qr = context.pathParamAsClass("qr", String.class).get();
