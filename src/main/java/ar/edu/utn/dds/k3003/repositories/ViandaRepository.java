@@ -44,6 +44,7 @@ public class ViandaRepository {
       }
       throw pe;
     }
+    entityManager.close();
     return vianda;
   }
 
@@ -52,7 +53,15 @@ public class ViandaRepository {
         entityManager.createQuery("SELECT v FROM Vianda v WHERE v.qr = :qr", Vianda.class);
     query.setParameter("qr", qr);
     List<Vianda> resultados = query.getResultList();
+    entityManager.close();
     return resultados.isEmpty() ? null : resultados.get(0);
+  }
+  
+  public List<Vianda> getViandas() {
+      TypedQuery<Vianda> query = entityManager.createQuery("SELECT v FROM Vianda v", Vianda.class);
+      List<Vianda> queryAux = query.getResultList();
+	  entityManager.close();
+      return queryAux;
   }
 
   public List<Vianda> obtenerXColIDAndAnioAndMes(
@@ -74,8 +83,10 @@ public class ViandaRepository {
     query.setParameter("colaboradorId", colaboradorId);
     query.setParameter("startOfMonth", startOfMonth);
     query.setParameter("endOfMonth", endOfMonth);
-
-    return query.getResultList();
+    
+    List<Vianda> queryAux = query.getResultList();
+    entityManager.close();
+    return queryAux;
   }
 
   public void clearDB() {
@@ -87,9 +98,11 @@ public class ViandaRepository {
       entityManager.createNativeQuery("ALTER SEQUENCE viandas_id_seq RESTART WITH 1").executeUpdate();
       entityManager.getTransaction()
           .commit();
+      entityManager.close();
     } catch (Exception e) {
       entityManager.getTransaction()
           .rollback();
+      entityManager.close();
       throw e;
     }
   }
