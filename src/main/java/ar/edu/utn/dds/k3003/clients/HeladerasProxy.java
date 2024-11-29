@@ -40,8 +40,9 @@ public class HeladerasProxy implements FachadaHeladeras {
 
     @Override
     public void depositar(Integer integer, String s) throws NoSuchElementException {
+    	Response<Void> response;
         try {
-              Response<Void> response = service.depositar(integer,s).execute();
+              response = service.depositar(integer,s).execute();
 
               if (!response.isSuccessful()) {
                   if (response.code() == HttpStatus.NOT_FOUND.getCode()) {
