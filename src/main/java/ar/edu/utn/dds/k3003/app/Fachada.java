@@ -20,16 +20,18 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class Fachada implements FachadaViandas {
-  private final ViandaMapper viandaMapper;
-  private final ViandaRepository viandaRepository;
-  private FachadaHeladeras fachadaHeladeras;
-  public static EntityManagerFactory entityManagerFactory;
+	private final ViandaMapper viandaMapper;
+	  private final ViandaRepository viandaRepository;
+	  private FachadaHeladeras fachadaHeladeras;
+	  private EntityManagerFactory entityManagerFactory;
+	  private EntityManager entityManager;
 
-  public Fachada() {
-	EntityManager entityManager= entityManagerFactory.createEntityManager();
-    this.viandaMapper = new ViandaMapper();
-    this.viandaRepository = new ViandaRepository(entityManagerFactory);
-  }
+	  public Fachada() {
+	    this.entityManagerFactory = Persistence.createEntityManagerFactory("viandas");
+	    this.entityManager = entityManagerFactory.createEntityManager();
+	    this.viandaMapper = new ViandaMapper();
+	    this.viandaRepository = new ViandaRepository(entityManager);
+	  }
 
   @Override
   public ViandaDTO agregar(ViandaDTO viandaDTO) {
