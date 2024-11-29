@@ -23,14 +23,12 @@ public class Fachada implements FachadaViandas {
   private final ViandaMapper viandaMapper;
   private final ViandaRepository viandaRepository;
   private FachadaHeladeras fachadaHeladeras;
-  private EntityManagerFactory entityManagerFactory;
-  private EntityManager entityManager;
+  public static EntityManagerFactory entityManagerFactory;
 
   public Fachada() {
-    this.entityManagerFactory = Persistence.createEntityManagerFactory("viandas");
-    this.entityManager = entityManagerFactory.createEntityManager();
+	EntityManager entityManager= entityManagerFactory.createEntityManager();
     this.viandaMapper = new ViandaMapper();
-    this.viandaRepository = new ViandaRepository(entityManager);
+    this.viandaRepository = new ViandaRepository(entityManagerFactory);
   }
 
   @Override
