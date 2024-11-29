@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
@@ -19,13 +20,14 @@ import org.hibernate.exception.ConstraintViolationException;
 @Getter
 @Setter
 public class ViandaRepository {
-  private final EntityManager entityManager;
+	private EntityManagerFactory entityManagerFactory ;
 
-  public ViandaRepository(final EntityManager entityManager) {
-    this.entityManager = entityManager;
-  }
+	  public ViandaRepository(final EntityManagerFactory entityManagerFactory) {
+	    this.entityManagerFactory = entityManagerFactory;
+	  }
 
   public Vianda save(Vianda vianda) {
+	EntityManager entityManager = entityManagerFactory.createEntityManager();
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
@@ -49,6 +51,7 @@ public class ViandaRepository {
   }
 
   public Vianda buscarXQR(String qr) {
+	  EntityManager entityManager = entityManagerFactory.createEntityManager();
     TypedQuery<Vianda> query =
         entityManager.createQuery("SELECT v FROM Vianda v WHERE v.qr = :qr", Vianda.class);
     query.setParameter("qr", qr);
@@ -58,6 +61,7 @@ public class ViandaRepository {
   }
   
   public List<Vianda> getViandas() {
+	  EntityManager entityManager = entityManagerFactory.createEntityManager();
       TypedQuery<Vianda> query = entityManager.createQuery("SELECT v FROM Vianda v", Vianda.class);
       List<Vianda> queryAux = query.getResultList();
 	  entityManager.close();
@@ -69,6 +73,7 @@ public class ViandaRepository {
       Integer mes,
       Integer anio
   ) {
+	  EntityManager entityManager = entityManagerFactory.createEntityManager();
     YearMonth yearMonth = YearMonth.of(anio, mes);
     LocalDateTime startOfMonth = yearMonth.atDay(1)
         .atStartOfDay();
@@ -90,6 +95,7 @@ public class ViandaRepository {
   }
 
   public void clearDB() {
+	EntityManager entityManager = entityManagerFactory.createEntityManager();
     entityManager.getTransaction()
         .begin();
     try {
