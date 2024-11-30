@@ -46,8 +46,9 @@ public class Fachada implements FachadaViandas {
   }
   
   public ViandaDTO agregarYDepositar(ViandaDTO viandaDTO) {
-	  fachadaHeladeras.depositar(viandaADepositar.getHeladeraId(), viandaADepositar.getCodigoQR());
 	  ViandaDTO viandaADepositar = agregar(viandaDTO);
+	  fachadaHeladeras.depositar(viandaADepositar.getHeladeraId(), viandaADepositar.getCodigoQR());
+	  
 	  return viandaADepositar;
   }
 
